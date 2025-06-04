@@ -17,8 +17,8 @@ const ratingSchema = new mongoose.Schema({
     max: 5
   },
   createdAt: {
-    type: Date,
-    default: Date.now
+    type: String, // Store as ISO string
+    required: true
   }
 });
 
