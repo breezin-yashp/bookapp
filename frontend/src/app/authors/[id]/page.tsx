@@ -4,6 +4,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@apollo/client';
 import { GET_AUTHOR } from '@/graphql/queries';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AuthorDetailPage() {
   const params = useParams();
@@ -18,7 +19,6 @@ export default function AuthorDetailPage() {
   if (error || !data?.author) return <div>Author not found</div>;
 
   const author = data.author;
-  console.log(author.books)
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4 relative">
@@ -30,12 +30,14 @@ export default function AuthorDetailPage() {
       </button>
 
       <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Left: Author Image */}
         <div className="md:col-span-1 border rounded-lg p-4 flex items-center justify-center">
           {author.image ? (
-            <img
+            <Image
               src={author.image}
               alt={author.name}
+              width={400}
+              height={320}
+              unoptimized
               className="rounded-lg object-cover max-h-80 w-full"
             />
           ) : (
@@ -43,7 +45,6 @@ export default function AuthorDetailPage() {
           )}
         </div>
 
-        {/* Right: Author Details + Books */}
         <div className="md:col-span-2 border rounded-lg p-4">
           <h1 className="text-2xl font-bold mb-2">{author.name}</h1>
           {author.biography && (
@@ -60,7 +61,7 @@ export default function AuthorDetailPage() {
             <p className="text-gray-500">No books found.</p>
           ) : (
             <ul className="grid gap-4">
-              {author.books.map((book: any) => (
+              {author.books.map((book: { id: string; title: string }) => (
                 <li key={book.id}>
                   <Link
                     href={`/books/${book.id}`}
