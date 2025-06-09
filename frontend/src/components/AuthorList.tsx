@@ -16,24 +16,26 @@ export default function AuthorList() {
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
-
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Authors</h2>
       <div className="grid gap-4">
         {data.authors.map((author: Author) => (
           <Link 
             key={author.id} 
             href={`/authors/${author.id}`}
-            className="p-4 border rounded-lg hover:bg-gray-50"
+            className="group p-4 border rounded-lg hover:bg-gray-50 transition-colors"
           >
-            <h3 className="text-lg font-semibold">{author.name}</h3>
+            <h3 className="text-lg font-semibold group-hover:text-black transition-colors">
+              {author.name}
+            </h3>
             {author.biography && (
-              <p className="text-gray-600 mt-2">{author.biography}</p>
+              <p className="text-gray-600 mt-2 group-hover:text-black transition-colors">
+                {author.biography}
+              </p>
             )}
             {author.born_date && (
-              <p className="text-sm text-gray-500 mt-1">
-                Born: {new Date(author.born_date).toLocaleDateString()}
+              <p className="text-sm text-gray-500 mt-1 group-hover:text-black transition-colors">
+                Born: {new Date(Number(author.born_date)).toLocaleDateString()}
               </p>
             )}
           </Link>
@@ -41,4 +43,4 @@ export default function AuthorList() {
       </div>
     </div>
   );
-} 
+}

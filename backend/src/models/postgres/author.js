@@ -11,6 +11,9 @@ const Author = sequelize.define('Author', {
   },
   born_date: {
     type: DataTypes.DATE
+  },
+  image: {
+    type: DataTypes.BLOB('long') 
   }
 });
 

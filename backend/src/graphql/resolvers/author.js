@@ -26,17 +26,32 @@ const authorResolvers = {
     }
   },
   Mutation: {
-    createAuthor: async (_, { name, biography, born_date }) => {
+    createAuthor: async (_, { name, biography, born_date, image }) => {
+      let imageBuffer = null;
+  
+      if (image) {
+        try {
+          imageBuffer = Buffer.from(image, 'base64');
+        } catch (err) {
+          throw new Error('Failed to decode base64 image');
+        }
+      }
+  
       return await Author.create({
         name,
         biography,
-        born_date
+        born_date,
+        image: imageBuffer,
       });
     }
   },
   Author: {
     books: async (author) => {
       return await Book.findAll({ where: { author_id: author.id } });
+    },
+    image: (author) => {
+      if (!author.image) return null;
+      return `data:image/jpeg;base64,${author.image.toString('base64')}`;
     }
   }
 };

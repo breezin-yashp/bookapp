@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQuery, gql } from '@apollo/client';
-import { GET_BOOKS, GET_AUTHORS } from '@/graphql/queries';
+import { GET_AUTHORS, GET_BOOKS} from '@/graphql/queries';
 
 const CREATE_BOOK = gql`
   mutation CreateBook($title: String!, $description: String, $published_date: String, $author_id: ID!) {
@@ -19,7 +19,8 @@ const CREATE_BOOK = gql`
   }
 `;
 
-export default function BookForm() {
+
+export default function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [publishedDate, setPublishedDate] = useState('');
@@ -27,7 +28,7 @@ export default function BookForm() {
   const { data: authorsData, loading: authorsLoading } = useQuery(GET_AUTHORS);
   const [createBook, { loading, error }] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: GET_BOOKS }],
-    awaitRefetchQueries: true
+    awaitRefetchQueries: true,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,14 +39,17 @@ export default function BookForm() {
     setDescription('');
     setPublishedDate('');
     setAuthorId('');
+    onSuccess?.();
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-4 border rounded-lg">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <h2 className="text-xl font-bold">Add Book</h2>
+
       <div>
-        <label className="block mb-1 font-medium">Title</label>
+        <label htmlFor="book-title" className="block mb-1 font-medium">Title</label>
         <input
+          id="book-title"
           type="text"
           value={title}
           onChange={e => setTitle(e.target.value)}
@@ -53,23 +57,28 @@ export default function BookForm() {
           required
         />
       </div>
+
       <div>
-        <label className="block mb-1 font-medium">Description</label>
+        <label htmlFor="book-description" className="block mb-1 font-medium">Description</label>
         <textarea
+          id="book-description"
           value={description}
           onChange={e => setDescription(e.target.value)}
           className="w-full border px-2 py-1 rounded"
         />
       </div>
+
       <div>
-        <label className="block mb-1 font-medium">Published Date</label>
+        <label htmlFor="book-published-date" className="block mb-1 font-medium">Published Date</label>
         <input
+          id="book-published-date"
           type="date"
           value={publishedDate}
           onChange={e => setPublishedDate(e.target.value)}
           className="w-full border px-2 py-1 rounded"
         />
       </div>
+
       <div>
         <label className="block mb-1 font-medium">Author</label>
         <select
@@ -85,6 +94,7 @@ export default function BookForm() {
           ))}
         </select>
       </div>
+
       <button
         type="submit"
         className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
@@ -92,7 +102,8 @@ export default function BookForm() {
       >
         {loading ? 'Adding...' : 'Add Book'}
       </button>
+
       {error && <div className="text-red-600">Error: {error.message}</div>}
     </form>
   );
-} 
+}

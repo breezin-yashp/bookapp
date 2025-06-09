@@ -7,6 +7,7 @@ export const GET_AUTHORS = gql`
       name
       biography
       born_date
+      image
     }
   }
 `;
@@ -18,6 +19,7 @@ export const GET_AUTHOR = gql`
       name
       biography
       born_date
+      image
       books {
         id
         title
@@ -27,6 +29,7 @@ export const GET_AUTHOR = gql`
     }
   }
 `;
+
 
 export const GET_BOOKS = gql`
   query GetBooks($limit: Int, $offset: Int, $title: String, $authorId: ID) {
