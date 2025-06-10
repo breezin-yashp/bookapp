@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useMutation, useQuery, gql } from '@apollo/client';
-import { GET_AUTHORS, GET_BOOKS} from '@/graphql/queries';
+import { GET_AUTHORS, GET_BOOKS, GET_AUTHOR } from '@/graphql/queries';
 
 const CREATE_BOOK = gql`
   mutation CreateBook($title: String!, $description: String, $published_date: String, $author_id: ID!) {
@@ -27,7 +27,10 @@ export default function BookForm({ onSuccess }: { onSuccess?: () => void }) {
   const [authorId, setAuthorId] = useState('');
   const { data: authorsData, loading: authorsLoading } = useQuery(GET_AUTHORS);
   const [createBook, { loading, error }] = useMutation(CREATE_BOOK, {
-    refetchQueries: [{ query: GET_BOOKS }],
+    refetchQueries: [
+      { query: GET_BOOKS },
+      { query: GET_AUTHOR, variables: { id: authorId } }
+    ],
     awaitRefetchQueries: true,
   });
 
